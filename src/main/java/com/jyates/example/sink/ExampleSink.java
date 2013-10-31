@@ -6,6 +6,7 @@ import org.apache.commons.configuration.SubsetConfiguration;
 import org.apache.hadoop.metrics2.AbstractMetric;
 import org.apache.hadoop.metrics2.MetricsRecord;
 import org.apache.hadoop.metrics2.MetricsSink;
+import org.apache.hadoop.metrics2.MetricsTag;
 
 import com.jyates.example.source.MetricSource;
 
@@ -29,14 +30,22 @@ public class ExampleSink implements MetricsSink {
 
   @Override
   public void putMetrics(MetricsRecord record) {
-    for(AbstractMetric metric: record.metrics()){
-      //just print the metric we care about
-      if (metric.name().equals(MetricSource.METRIC_NAME)) {
-        System.out.println("------------");
-        System.out.println(metric);
-        System.out.println("------------");
+    // get the hostname so we can print that info
+    String hostname = null;
+    for (MetricsTag tag : record.tags()) {
+      if (tag.name().equals("Hostname")) {
+        hostname = tag.value();
+        break;
       }
     }
+    System.out.println("For host: '" + hostname + "' tracked metrics:");
+    for(AbstractMetric metric: record.metrics()){
+      //just print the metric we care about
+      if (metric.name().startsWith(MetricSource.METRIC_NAME)) {
+        System.out.println("\t" + metric);
+      }
+    }
+
     
   }
 

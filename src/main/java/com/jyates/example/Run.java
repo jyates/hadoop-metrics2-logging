@@ -24,7 +24,7 @@ public class Run {
     // run a few times to get some metrics generated
     Run run = new Run();
     for (int i = 0; i < 2; i++) {
-      run.doIt();
+      run.doIt(i);
       System.out.println("--- Done doIt ---");
     }
     System.out.println("Counted: " + run.count);
@@ -34,7 +34,7 @@ public class Run {
     ExampleSink.done.await();
   }
 
-  private void doIt() throws InterruptedException {
+  private void doIt(int count) throws InterruptedException {
     // start tracking time
     long start = System.currentTimeMillis();
 
@@ -47,9 +47,9 @@ public class Run {
 
     // update the metric
     long elapsed = end - start;
-    metrics.addTimeStat(elapsed);
+    metrics.addPerMethodCallStat("doIt-" + count, elapsed);
     // update our interanl counter too
-    count += elapsed;
+    this.count += elapsed;
     System.out.println("Elapsed: " + elapsed);
   }
 

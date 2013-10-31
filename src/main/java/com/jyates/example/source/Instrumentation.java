@@ -10,5 +10,5 @@ package com.jyates.example.source;
  */
 public interface Instrumentation {
 
-  public void addTimeStat(long time);
+  public void addPerMethodCallStat(String string, long time);
 }
